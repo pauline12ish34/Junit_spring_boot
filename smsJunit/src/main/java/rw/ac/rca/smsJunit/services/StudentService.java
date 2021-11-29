@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import rw.ac.rca.smsJunit.models.Student;
 import rw.ac.rca.smsJunit.repositories.StudentRepository;
+import rw.ac.rca.smsJunit.utils.Exception.ResourceNotFoundException;
 
 @Service
 public class StudentService {
@@ -26,13 +27,12 @@ public Student createStudent(){
 }
 
 
-public Student findStudent(int id) {
-	Optional<Student> stdOptional=Optional.ofNullable(studentRepository.findStd(id));
-if(stdOptional.isPresent()) {
-Student std=stdOptional.get();
-return std;
-}
-return null;
+public Student findStudent(int id) throws ResourceNotFoundException {
+	Optional<Student> stdOptional=studentRepository.findById(id);
+	if(stdOptional.isPresent()) {
+		return stdOptional.get();
+	}
+	throw new ResourceNotFoundException("student","id",id);
 }
 
 public Student updateStudent(@RequestParam int id,@RequestParam Student std){
